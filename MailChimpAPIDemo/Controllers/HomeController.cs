@@ -34,6 +34,43 @@ namespace MailChimpAPIDemo.Controllers
             return View(returnValue);
         }
 
+        public ActionResult AddContact(string listId)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddContact(string listId, Models.Contact contact)
+        {
+            var subscribe = new PerceptiveMCAPI.Methods.listSubscribe();
+            var input = new PerceptiveMCAPI.Types.listSubscribeInput()
+            {
+                parms = new PerceptiveMCAPI.Types.listSubscribeParms()
+                {
+                    email_address = contact.EmailAddress,
+                    double_optin = false,
+                    replace_interests = false,
+                    send_welcome = false,
+                    update_existing = true,
+                    merge_vars = new Dictionary<string, object>(),
+                    id = listId
+                }
+            };
+            input.parms.merge_vars.Add("FNAME", contact.FirstName);
+            input.parms.merge_vars.Add("LNAME", contact.LastName);
+            input.parms.merge_vars.Add("BIRTHDATE", contact.BirthDate.HasValue ? contact.BirthDate.Value.ToString("yyyy-MM-dd") : string.Empty);
+
+            PerceptiveMCAPI.Types.listSubscribeOutput output = subscribe.Execute(input);
+            if (output != null)
+            {
+                if (output.result)
+                {
+                    return RedirectToAction("Index");
+                }
+                return View("Error");
+            }
+            return View("Error");
+        }
     }
 
     public class McList

@@ -10,6 +10,7 @@
             <th>List name</th>
             <th>Subscribers</th>
             <th>Unsubscribers</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,7 @@
                 <td>@result.ListName</td>
                 <td>@result.MemberCount</td>
                 <td>@result.UnsubscribeCount</td>
+                <td>@Html.ActionLink("Add contact","AddContact", new{listId = @result.ListId})</td>
             </tr>
         }
     </tbody>
